@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cowweb
+spec:
+  replicas: 8
+  selector:
+    matchLabels:
+      app: cowweb
+  template:
+    metadata:
+      labels:
+        app: cowweb
+    spec:
+      containers:
+        - name: cowweb
+          image: cowweb
+          ports:
+            - name: api
+              containerPort: 8080
+          imagePullPolicy: IfNotPresent

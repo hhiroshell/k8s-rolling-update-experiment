@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cowweb
+spec:
+  template:
+    spec:
+      containers:
+        - name: cowweb
+          command:
+            - ./cowweb
+          args:
+            - serve
+            - --port=8080
+            - --slow
+            - --load=640
+            - --shutdown-gracefully=false
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: api
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: api
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            failureThreshold: 5
+      terminationGracePeriodSeconds: 60

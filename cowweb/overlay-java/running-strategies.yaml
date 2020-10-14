@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cowweb
+spec:
+  template:
+    spec:
+      containers:
+        - name: cowweb
+          command:
+            - java
+          args:
+            - -Dspring.profiles.active=slow
+            - -cp
+            - /app/resources:/app/classes:/app/libs/*
+            - com.github.hhiroshell.cowweb.Cowweb
+            - --load=128
+            - --management.endpoint.health.probes.enabled=true
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: api
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: api
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            failureThreshold: 5
